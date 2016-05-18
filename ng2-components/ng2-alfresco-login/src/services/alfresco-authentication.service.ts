@@ -18,6 +18,7 @@
 import { Injectable } from 'angular2/core';
 import { Observable } from 'rxjs/Rx';
 import { Http, Headers, Response } from 'angular2/http';
+import { AlfrescoSettingsService } from 'ng2-alfresco-core/services';
 
 declare let xml2json: any;
 
@@ -28,15 +29,19 @@ declare let xml2json: any;
 export class AlfrescoAuthenticationService {
     token: string;
 
-    private _host: string = 'http://192.168.99.100:8080';
-    private _baseUrl: string = this._host + '/alfresco/api/-default-/public/authentication/versions/1';
+    private _alfrescoSettings: AlfrescoSettingsService;
+    private _baseAuthUrl: string = '/alfresco/api/-default-/public/authentication/versions/1';
 
     /**
      * Constructor
      * @param http
+     * @param settings Common settings describing how to access the repository
      */
-    constructor(public http: Http) {
+    constructor(public http: Http, private settings: AlfrescoSettingsService) {
         this.token = localStorage.getItem('token');
+        if (settings) {
+            this._alfrescoSettings = settings;
+        }
     }
 
     /**
@@ -70,7 +75,7 @@ export class AlfrescoAuthenticationService {
         headers.append('Content-Type', 'application/json');
         headers.append('Accept', 'application/json');
 
-        return this.http.post(this._baseUrl + '/tickets', credentials, {
+        return this.http.post(this._alfrescoSettings.host + this._baseAuthUrl + '/tickets', credentials, {
                 headers: headers
             })
             .map((res: any) => {
@@ -91,7 +96,7 @@ export class AlfrescoAuthenticationService {
         headers.append('Content-Type', 'application/json');
         headers.append('Authorization', 'Basic ' + btoa(this.token));
 
-        return this.http.delete(this._baseUrl + '/tickets/-me-', {
+        return this.http.delete(this._alfrescoSettings.host + this._baseAuthUrl + '/tickets/-me-', {
                 headers: headers
             })
             .map((res: any) => {

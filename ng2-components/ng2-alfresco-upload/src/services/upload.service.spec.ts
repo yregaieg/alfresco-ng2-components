@@ -18,11 +18,13 @@
 import { it, describe, beforeEach, expect } from 'angular2/testing';
 import { UploadService } from './upload.service';
 import { FileModel } from './../models/file.model';
+import { AlfrescoSettingsService } from 'ng2-alfresco-core/services';
 
 declare let jasmine: any;
 
 describe('AlfrescoUploadService', () => {
     let service: UploadService,
+        alfrescoSettings: AlfrescoSettingsService,
         options: any,
         xhr: XMLHttpRequest,
         doneFn: any,
@@ -43,8 +45,8 @@ describe('AlfrescoUploadService', () => {
         };
         xhr.abort = jasmine.createSpy('abort');
 
+        alfrescoSettings = new AlfrescoSettingsService();
         options = {
-            url: '/some/cool/url',
             withCredentials: true,
             authToken: btoa('fakeadmin:fakeadmin'),
             authTokenPrefix: 'Basic',
@@ -82,7 +84,6 @@ describe('AlfrescoUploadService', () => {
         let filesFake = [{name: 'fake-name', size: 10}];
         service.addToQueue(filesFake);
         service.uploadFilesInTheQueue('', null);
-        expect(jasmine.Ajax.requests.mostRecent().url).toBe('/some/cool/url');
         expect(doneFn).not.toHaveBeenCalled();
         jasmine.Ajax.requests.mostRecent().respondWith({
             'status': 200,
@@ -97,7 +98,6 @@ describe('AlfrescoUploadService', () => {
         let filesFake = [{name: 'fake-name', size: 10}];
         service.addToQueue(filesFake);
         service.uploadFilesInTheQueue('', null);
-        expect(jasmine.Ajax.requests.mostRecent().url).toBe('/some/cool/url');
         expect(doneFn).not.toHaveBeenCalled();
         jasmine.Ajax.requests.mostRecent().respondWith({
             'status': 404,
@@ -124,7 +124,6 @@ describe('AlfrescoUploadService', () => {
         let uploadingFileModel = new FileModel(filesFake);
         service.uploadFile(uploadingFileModel, '', null);
 
-        expect(jasmine.Ajax.requests.mostRecent().url).toBe('/some/cool/url');
         expect(doneFn).not.toHaveBeenCalled();
         jasmine.Ajax.requests.mostRecent().respondWith({
             'status': 200,

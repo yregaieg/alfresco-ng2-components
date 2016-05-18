@@ -20,6 +20,7 @@ import { UploadService } from '../services/upload.service';
 import { FileModel } from '../models/file.model';
 import { FileUploadingDialogComponent } from './file-uploading-dialog.component';
 import { FileDraggableDirective } from '../directives/file-draggable.directive';
+import { AlfrescoSettingsService } from 'ng2-alfresco-core/services';
 
 declare let __moduleName: string;
 
@@ -58,11 +59,11 @@ export class UploadDragAreaComponent {
     @Output()
     onSuccess = new EventEmitter();
 
-    constructor(public el: ElementRef) {
+    constructor(public el: ElementRef, alfrescoSettingsService:AlfrescoSettingsService) {
         console.log('UploadComponent constructor', el);
 
         this._uploaderService = new UploadService({
-            url: 'http://192.168.99.100:8080/alfresco/service/api/upload',
+            alfrescoSettings: alfrescoSettingsService,
             withCredentials: true,
             authToken: btoa('admin:admin'),
             authTokenPrefix: 'Basic',

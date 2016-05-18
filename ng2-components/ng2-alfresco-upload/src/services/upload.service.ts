@@ -18,6 +18,7 @@
 
 import { FileModel } from '../models/file.model';
 import { EventEmitter } from 'angular2/core';
+import { AlfrescoSettingsService } from 'ng2-alfresco-core/services';
 
 
 /**
@@ -27,7 +28,7 @@ import { EventEmitter } from 'angular2/core';
  * @returns {UploadService} .
  */
 export class UploadService {
-    private _url: string;
+    private _uploadPath: string = '/alfresco/service/api/upload';
     private _method: string = 'POST';
     private _authTokenPrefix: string = 'Basic';
     private _authToken: string = undefined;
@@ -36,13 +37,15 @@ export class UploadService {
     private _withCredentials: boolean;
     private _xmlHttpRequest: XMLHttpRequest;
 
+    private _alfrescoSettings: AlfrescoSettingsService;
+
     private _queue: FileModel[] = [];
 
     constructor(private options: any) {
         console.log('UploadService constructor');
 
         this._withCredentials = options.withCredentials != null ? options.withCredentials : this._withCredentials;
-        this._url = options.url != null ? options.url : this._url;
+        this._alfrescoSettings = options.alfrescoSettings != null ? options.alfrescoSettings : this._alfrescoSettings;
         this._authTokenPrefix = options.authTokenPrefix != null ? options.authTokenPrefix : this._authTokenPrefix;
         this._authToken = options.authToken != null ? options.authToken : this._authToken;
         this._fieldName = options.fieldName != null ? options.fieldName : this._fieldName;
@@ -122,6 +125,9 @@ export class UploadService {
         }
     }
 
+    private _getUploadUrl(): string {
+        return this._alfrescoSettings.host + this._uploadPath;
+    }
     /**
      * Upload a file into the directory folder, and enrich it with the xhr.
      *
@@ -140,7 +146,7 @@ export class UploadService {
         this._configureXMLHttpRequest(uploadingFileModel, elementEmit);
         uploadingFileModel.setXMLHttpRequest(this._xmlHttpRequest);
 
-        this._xmlHttpRequest.open(this._method, this._url, true);
+        this._xmlHttpRequest.open(this._method, this._getUploadUrl(), true);
         this._xmlHttpRequest.withCredentials = this._withCredentials;
 
         if (this._authToken) {

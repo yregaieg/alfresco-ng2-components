@@ -29,22 +29,22 @@ declare let AlfrescoApi: any;
 @Injectable()
 export class AlfrescoService {
 
-    private _host: string = 'http://127.0.0.1:8080';
+    private _alfrescoSettings: AlfrescoSettingsService;
     private _baseUrlPath: string = '/alfresco/api/-default-/public/alfresco/versions/1';
 
     constructor(private http: Http,
                 private settings: AlfrescoSettingsService) {
         if (settings) {
-            this._host = settings.host;
+            this._alfrescoSettings = settings;
         }
     }
 
     public get host(): string {
-        return this._host;
+        return this._alfrescoSettings.host;
     }
 
     public set host(value: string) {
-        this._host = value;
+        this._alfrescoSettings.host = value;
     }
 
     private getBaseUrl(): string {
@@ -105,7 +105,7 @@ export class AlfrescoService {
      * @returns {string} URL address.
      */
     getContentUrl(document: MinimalNodeEntity) {
-        return this._host +
+        return this._alfrescoSettings.host +
             '/alfresco/service/api/node/workspace/SpacesStore/' +
             document.entry.id + '/content';
     }
