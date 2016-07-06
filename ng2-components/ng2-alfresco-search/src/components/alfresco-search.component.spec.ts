@@ -113,6 +113,16 @@ describe('AlfrescoSearchComponent', () => {
 
         it('should emit preview when file item clicked',
             inject([TestComponentBuilder], (tcb: TestComponentBuilder) => {
+                const results = [{
+                    entry: {
+                        id: '123',
+                        name: 'MyDoc',
+                        content: {
+                            mimetype: 'text/plain'
+                        },
+                        isFile: true
+                    }
+                }];
                 return tcb
                     .overrideProviders(AlfrescoSearchComponent, [
                         { provide: AlfrescoSearchService, useClass: SearchServiceMock }
@@ -120,21 +130,14 @@ describe('AlfrescoSearchComponent', () => {
                     .createAsync(AlfrescoSearchComponent)
                     .then((fixture) => {
                         let componentInstance = fixture.componentInstance;
-                        componentInstance.results = [{
-                            entry: {
-                                id: '123',
-                                name: 'MyDoc',
-                                content: {
-                                    mimetype: 'text/plain'
-                                },
-                                isFile: true
-                            }
-                        }];
+                        componentInstance.results = results;
                         fixture.detectChanges(componentInstance.results[0]);
+                        let value;
                         componentInstance.preview.subscribe(e => {
-                            expect(e.value).toBe(componentInstance.results[0]);
+                            value = e.value;
                         });
-                        componentInstance.onItemClick();
+                        componentInstance.onItemClick(results[0]);
+                        expect(value).toBe(results[0]);
 
                     });
             }));

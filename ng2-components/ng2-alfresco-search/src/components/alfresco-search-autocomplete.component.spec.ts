@@ -113,10 +113,12 @@ describe('AlfrescoSearchAutocompleteComponent', () => {
                         }
                     }];
                     fixture.detectChanges(componentInstance.results[0]);
+                    let value;
                     componentInstance.preview.subscribe(e => {
-                        expect(e.value).toBe(componentInstance.results[0]);
+                        value = e.value;
                     });
-                    componentInstance.onItemClick();
+                    componentInstance.onItemClick(componentInstance.results[0]);
+                    expect(value).toBe(componentInstance.results[0]);
 
                 });
         }));
