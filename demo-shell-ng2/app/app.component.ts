@@ -55,15 +55,22 @@ declare var document: any;
 export class AppComponent {
     translate: AlfrescoTranslationService;
     searchTerm: string = '';
+    hostecm: string = 'http://localhost:8080';
 
     constructor(public auth: AlfrescoAuthenticationService,
                 public router: Router,
                 translate: AlfrescoTranslationService,
-                alfrescoSettingsService: AlfrescoSettingsService) {
-        alfrescoSettingsService.host = 'http://localhost:8080';
+                private  alfrescoSettingsService: AlfrescoSettingsService) {
+        alfrescoSettingsService.host = this.hostecm;
 
         this.translate = translate;
         this.translate.addTranslationFolder();
+    }
+
+    public onChangeHost(event: KeyboardEvent): void {
+        console.log( (<HTMLInputElement>event.target).value);
+        this.hostecm = (<HTMLInputElement>event.target).value;
+        this.alfrescoSettingsService.host = this.hostecm;
     }
 
     isActive(instruction: any[]): boolean {
