@@ -19,7 +19,7 @@ browserSync.init({
         'node_modules/ng2-alfresco-search/dist/**/*.{html,htm,css,js}',
         'node_modules/ng2-alfresco-upload/dist/**/*.{html,htm,css,js}',
         'node_modules/ng2-alfresco-viewer/dist/**/*.{html,htm,css,js}',
-        'node_modules/ng2-alfresco-activiti-tasklist/dist/**/*.{html,htm,css,js}'],
+        'node_modules/ng2-activiti-tasklist/dist/**/*.{html,htm,css,js}'],
 
     reloadDelay: 1000
 });
